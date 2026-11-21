@@ -22,8 +22,9 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 const path = require('path');
 const fs = require('fs');
 
-// Base API route
+// Base API routes (mounted under /api and root fallback for client resilience)
 app.use('/api', routes);
+app.use('/', routes);
 
 // Serve built frontend assets if present
 const clientDistPath = path.join(__dirname, '../client/dist');
