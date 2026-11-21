@@ -211,9 +211,9 @@ const getAssignedCandidates = async (leadUser, filters = {}) => {
 };
 
 /**
- * Get full candidate details with evaluations and transfer history
+ * Get full candidate details with evaluations, transfer history, and prev/next candidate navigation
  */
-const getCandidateDetails = async (candidate) => {
+const getCandidateDetails = async (candidate, user = null, queryParams = {}) => {
   const [evaluations, transfers, populatedCandidate] = await Promise.all([
     Evaluation.find({ candidate: candidate._id })
       .populate('lead', 'name assignedDomains')
@@ -227,6 +227,50 @@ const getCandidateDetails = async (candidate) => {
   const candidateObj = populatedCandidate.toObject();
   candidateObj.evaluations = evaluations;
   candidateObj.transferHistory = transfers;
+
+  // Calculate Fast Prev / Next Navigation within the relevant candidate pipeline
+  try {
+    let domainFilter = {};
+    if (user && user.role === 'lead') {
+      const leadDomains = user.domains || [];
+      domainFilter = {
+        $or: [
+          { currentDomain: { $in: leadDomains.map((d) => new RegExp(`^${escapeRegex(d)}$`, 'i')) } },
+          { assignedLead: user.id }
+        ]
+      };
+    } else {
+      domainFilter = { currentDomain: candidate.currentDomain };
+    }
+
+    if (queryParams && queryParams.yearOfStudy) {
+      domainFilter.yearOfStudy = queryParams.yearOfStudy;
+    }
+
+    // Sort by interview priority (1st Year first, then roll number)
+    const siblings = await Candidate.find(domainFilter, '_id name rollNumber candidateId yearOfStudy')
+      .sort({ yearOfStudy: 1, rollNumber: 1 });
+
+    const currentIndex = siblings.findIndex((s) => s._id.toString() === candidate._id.toString());
+
+    if (currentIndex !== -1) {
+      const prevCandidate = currentIndex > 0 ? siblings[currentIndex - 1] : null;
+      const nextCandidate = currentIndex < siblings.length - 1 ? siblings[currentIndex + 1] : null;
+
+      candidateObj.navigation = {
+        currentIndex: currentIndex + 1,
+        totalCandidates: siblings.length,
+        prev: prevCandidate
+          ? { id: prevCandidate._id, name: prevCandidate.name, rollNumber: prevCandidate.rollNumber }
+          : null,
+        next: nextCandidate
+          ? { id: nextCandidate._id, name: nextCandidate.name, rollNumber: nextCandidate.rollNumber }
+          : null
+      };
+    }
+  } catch (navErr) {
+    console.warn('[CandidateService] Failed to calculate candidate navigation:', navErr.message);
+  }
 
   return candidateObj;
 };

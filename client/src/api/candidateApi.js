@@ -8,8 +8,8 @@ export const getAssignedCandidates = async (params = {}) => {
   return axiosClient.get('/candidates/assigned', { params });
 };
 
-export const getCandidateById = async (id) => {
-  return axiosClient.get(`/candidates/${id}`);
+export const getCandidateById = async (id, params = {}) => {
+  return axiosClient.get(`/candidates/${id}`, { params });
 };
 
 export const updateShortlistStatus = async (id, shortlistStatus) => {

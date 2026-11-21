@@ -37,7 +37,7 @@ const handleGetAssignedCandidates = async (req, res, next) => {
 const handleGetCandidateDetails = async (req, res, next) => {
   try {
     // req.candidate is already attached and access-checked by authorizeCandidateAccess middleware
-    const details = await candidateService.getCandidateDetails(req.candidate);
+    const details = await candidateService.getCandidateDetails(req.candidate, req.user, req.query);
     return successResponse(res, 200, 'Candidate details retrieved successfully', details);
   } catch (error) {
     next(error);

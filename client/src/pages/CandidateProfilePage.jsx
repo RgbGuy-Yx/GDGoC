@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { getCandidateById, updateShortlistStatus, updateFinalSelectionStatus } from '../api/candidateApi';
 import { useAuth } from '../context/AuthContext';
 import { EvaluationForm } from '../components/candidates/EvaluationForm';
@@ -22,12 +22,15 @@ import {
   Clock,
   Shield,
   MessageSquare,
-  AlertCircle
+  AlertCircle,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
 
 export const CandidateProfilePage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const { user, isAdmin } = useAuth();
 
   const [candidate, setCandidate] = useState(null);
@@ -41,7 +44,12 @@ export const CandidateProfilePage = () => {
     setLoading(true);
     setError('');
     try {
-      const res = await getCandidateById(id);
+      const searchParams = new URLSearchParams(location.search);
+      const params = {};
+      const yearFilter = searchParams.get('yearOfStudy') || searchParams.get('year');
+      if (yearFilter) params.yearOfStudy = yearFilter;
+
+      const res = await getCandidateById(id, params);
       if (res.success) {
         setCandidate(res.data);
       }
@@ -54,7 +62,13 @@ export const CandidateProfilePage = () => {
 
   useEffect(() => {
     fetchCandidate();
-  }, [id]);
+  }, [id, location.search]);
+
+  const handleNavigateCandidate = (targetId) => {
+    if (!targetId) return;
+    const base = user?.role === 'lead' ? '/lead/candidates' : '/admin/candidates';
+    navigate(`${base}/${targetId}${location.search}`);
+  };
 
   const handleShortlistToggle = async (newStatus) => {
     setUpdatingShortlist(true);
@@ -159,40 +173,82 @@ export const CandidateProfilePage = () => {
           </div>
         </div>
 
-        {/* Action Controls: Only authorized active Team Leads can shortlist / unshortlist */}
-        {isCurrentLead && (
-          <div className="flex items-center gap-2 flex-wrap w-full sm:w-auto">
-            {candidate.shortlistStatus === 'SHORTLISTED' ? (
-              <button
-                disabled={updatingShortlist}
-                onClick={() => handleShortlistToggle('REJECTED')}
-                className="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-4 py-2.5 sm:py-2 text-xs font-semibold rounded-full bg-[#FAFAFA] text-[#737373] hover:text-[#171717] border border-[#E5E5E5] transition-all"
-              >
-                <XCircle className="w-3.5 h-3.5 text-rose-500" />
-                Unshortlist Candidate
-              </button>
-            ) : (
-              <button
-                disabled={updatingShortlist}
-                onClick={() => handleShortlistToggle('SHORTLISTED')}
-                className="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-4 py-2.5 sm:py-2 text-xs font-semibold rounded-full bg-[#7AF1A7] text-[#171717] hover:bg-[#6be499] active:scale-[0.98] transition-all shadow-2xs"
-              >
-                <CheckCircle2 className="w-3.5 h-3.5 text-[#166534]" />
-                Shortlist Candidate
-              </button>
+        {/* Action Controls & Fast Next/Prev Candidate Navigation */}
+        <div className="flex items-center gap-2.5 flex-wrap w-full sm:w-auto justify-between sm:justify-end">
+          {/* Only authorized active Team Leads can shortlist / unshortlist */}
+          {isCurrentLead && (
+            <div className="flex items-center gap-2 flex-wrap flex-1 sm:flex-none">
+              {candidate.shortlistStatus === 'SHORTLISTED' ? (
+                <button
+                  disabled={updatingShortlist}
+                  onClick={() => handleShortlistToggle('REJECTED')}
+                  className="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-4 py-2 text-xs font-semibold rounded-full bg-[#FAFAFA] text-[#737373] hover:text-[#171717] border border-[#E5E5E5] transition-all"
+                >
+                  <XCircle className="w-3.5 h-3.5 text-rose-500" />
+                  Unshortlist
+                </button>
+              ) : (
+                <button
+                  disabled={updatingShortlist}
+                  onClick={() => handleShortlistToggle('SHORTLISTED')}
+                  className="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-4 py-2 text-xs font-semibold rounded-full bg-[#7AF1A7] text-[#171717] hover:bg-[#6be499] active:scale-[0.98] transition-all shadow-2xs"
+                >
+                  <CheckCircle2 className="w-3.5 h-3.5 text-[#166534]" />
+                  Shortlist
+                </button>
+              )}
+
+              {candidate.shortlistStatus !== 'PENDING' && (
+                <button
+                  disabled={updatingShortlist}
+                  onClick={() => handleShortlistToggle('PENDING')}
+                  className="px-3.5 py-2 text-xs font-medium text-[#525252] hover:bg-[#F4F4F4] border border-[#E5E5E5] rounded-full transition-all"
+                >
+                  Reset
+                </button>
+              )}
+            </div>
+          )}
+
+          {/* Fast Candidate Next / Prev Navigation Widget */}
+          <div className="inline-flex items-center p-1 rounded-full bg-white border border-[#E5E5E5] shadow-2xs shrink-0 ml-auto sm:ml-0">
+            <button
+              type="button"
+              onClick={() => handleNavigateCandidate(candidate.navigation?.prev?.id)}
+              disabled={!candidate.navigation?.prev}
+              className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium text-[#525252] hover:text-[#171717] hover:bg-[#F4F4F4] disabled:opacity-35 disabled:hover:bg-transparent transition-all"
+              title={
+                candidate.navigation?.prev
+                  ? `Previous: ${candidate.navigation.prev.name || candidate.navigation.prev.rollNumber}`
+                  : 'Start of candidate list'
+              }
+            >
+              <ChevronLeft className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Prev</span>
+            </button>
+
+            {candidate.navigation?.currentIndex && (
+              <span className="px-2.5 text-[11px] font-mono font-medium text-[#737373] border-x border-[#E5E5E5]">
+                {candidate.navigation.currentIndex} / {candidate.navigation.totalCandidates}
+              </span>
             )}
 
-            {candidate.shortlistStatus !== 'PENDING' && (
-              <button
-                disabled={updatingShortlist}
-                onClick={() => handleShortlistToggle('PENDING')}
-                className="flex-1 sm:flex-none px-4 py-2.5 sm:py-2 text-xs font-medium text-[#525252] hover:bg-[#F4F4F4] border border-[#E5E5E5] rounded-full transition-all"
-              >
-                Reset to Pending
-              </button>
-            )}
+            <button
+              type="button"
+              onClick={() => handleNavigateCandidate(candidate.navigation?.next?.id)}
+              disabled={!candidate.navigation?.next}
+              className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-semibold bg-[#171717] text-white hover:bg-black disabled:bg-[#E5E5E5] disabled:text-[#A3A3A3] transition-all shadow-2xs active:scale-[0.98]"
+              title={
+                candidate.navigation?.next
+                  ? `Next: ${candidate.navigation.next.name || candidate.navigation.next.rollNumber}`
+                  : 'Last candidate reached'
+              }
+            >
+              <span>Next Candidate</span>
+              <ChevronRight className="w-3.5 h-3.5 text-[#7AF1A7]" />
+            </button>
           </div>
-        )}
+        </div>
       </div>
 
       {/* Transferred Lead Notice Bar */}
