@@ -59,4 +59,13 @@
   .card-handcrafted {
     @apply bg-white rounded-2xl border border-[#E5E5E5] shadow-ambient;
   }
+
+  /* Touch-friendly horizontal scroll without ugly scrollbars */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 }

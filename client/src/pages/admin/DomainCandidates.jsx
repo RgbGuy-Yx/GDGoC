@@ -76,7 +76,7 @@ export const DomainCandidates = () => {
       </div>
 
       {/* Domain Selection Tabs */}
-      <div className="flex flex-wrap gap-2 border-b border-[#E5E5E5] pb-4">
+      <div className="flex items-center gap-2 overflow-x-auto no-scrollbar border-b border-[#E5E5E5] pb-4">
         {domains.map((dom) => {
           const count = allCandidates.filter((c) => c.currentDomain === dom).length;
           const isSelected = selectedDomain === dom;
@@ -84,7 +84,7 @@ export const DomainCandidates = () => {
             <button
               key={dom}
               onClick={() => setSelectedDomain(dom)}
-              className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-medium transition-all ${
+              className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-medium shrink-0 whitespace-nowrap transition-all ${
                 isSelected
                   ? 'bg-[#171717] text-white shadow-2xs font-semibold'
                   : 'bg-white text-[#525252] hover:text-[#171717] border border-[#E5E5E5] hover:bg-[#F4F4F4]'
@@ -150,11 +150,11 @@ export const DomainCandidates = () => {
             </p>
           </div>
 
-          <div className="inline-flex items-center bg-[#F4F4F4] p-0.5 rounded-full border border-[#E5E5E5] text-xs self-start sm:self-auto">
+          <div className="inline-flex items-center bg-[#F4F4F4] p-0.5 rounded-full border border-[#E5E5E5] text-xs max-w-full overflow-x-auto no-scrollbar shrink-0 self-start sm:self-auto">
             <button
               type="button"
               onClick={() => setSelectedYear('')}
-              className={`px-3.5 py-1 rounded-full transition-all ${
+              className={`px-3.5 py-1 rounded-full shrink-0 whitespace-nowrap transition-all ${
                 !selectedYear
                   ? 'bg-white text-[#171717] font-semibold shadow-2xs'
                   : 'text-[#737373] hover:text-[#171717]'
@@ -165,7 +165,7 @@ export const DomainCandidates = () => {
             <button
               type="button"
               onClick={() => setSelectedYear('1st Year')}
-              className={`px-3.5 py-1 rounded-full transition-all ${
+              className={`px-3.5 py-1 rounded-full shrink-0 whitespace-nowrap transition-all ${
                 selectedYear === '1st Year'
                   ? 'bg-white text-blue-700 font-semibold shadow-2xs'
                   : 'text-[#737373] hover:text-[#171717]'
@@ -176,7 +176,7 @@ export const DomainCandidates = () => {
             <button
               type="button"
               onClick={() => setSelectedYear('2nd Year')}
-              className={`px-3.5 py-1 rounded-full transition-all ${
+              className={`px-3.5 py-1 rounded-full shrink-0 whitespace-nowrap transition-all ${
                 selectedYear === '2nd Year'
                   ? 'bg-white text-purple-700 font-semibold shadow-2xs'
                   : 'text-[#737373] hover:text-[#171717]'
@@ -187,7 +187,7 @@ export const DomainCandidates = () => {
             <button
               type="button"
               onClick={() => setSelectedYear('3rd Year')}
-              className={`px-3.5 py-1 rounded-full transition-all ${
+              className={`px-3.5 py-1 rounded-full shrink-0 whitespace-nowrap transition-all ${
                 selectedYear === '3rd Year'
                   ? 'bg-white text-amber-700 font-semibold shadow-2xs'
                   : 'text-[#737373] hover:text-[#171717]'

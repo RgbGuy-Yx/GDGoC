@@ -142,11 +142,11 @@ export const AdminCandidates = () => {
 
         <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
           {/* Minimal Segmented Year Switcher */}
-          <div className="inline-flex items-center bg-[#F4F4F4] p-0.5 rounded-full border border-[#E5E5E5] text-xs">
+          <div className="inline-flex items-center bg-[#F4F4F4] p-0.5 rounded-full border border-[#E5E5E5] text-xs max-w-full overflow-x-auto no-scrollbar shrink-0">
             <button
               type="button"
               onClick={() => { setYearOfStudy(''); setCurrentPage(1); }}
-              className={`px-3.5 py-1 rounded-full transition-all ${
+              className={`px-3.5 py-1 rounded-full shrink-0 whitespace-nowrap transition-all ${
                 !yearOfStudy
                   ? 'bg-white text-[#171717] font-semibold shadow-2xs'
                   : 'text-[#737373] hover:text-[#171717]'
@@ -157,7 +157,7 @@ export const AdminCandidates = () => {
             <button
               type="button"
               onClick={() => { setYearOfStudy('1st Year'); setCurrentPage(1); }}
-              className={`px-3.5 py-1 rounded-full transition-all ${
+              className={`px-3.5 py-1 rounded-full shrink-0 whitespace-nowrap transition-all ${
                 yearOfStudy === '1st Year'
                   ? 'bg-white text-blue-700 font-semibold shadow-2xs'
                   : 'text-[#737373] hover:text-[#171717]'
@@ -168,7 +168,7 @@ export const AdminCandidates = () => {
             <button
               type="button"
               onClick={() => { setYearOfStudy('2nd Year'); setCurrentPage(1); }}
-              className={`px-3.5 py-1 rounded-full transition-all ${
+              className={`px-3.5 py-1 rounded-full shrink-0 whitespace-nowrap transition-all ${
                 yearOfStudy === '2nd Year'
                   ? 'bg-white text-purple-700 font-semibold shadow-2xs'
                   : 'text-[#737373] hover:text-[#171717]'
@@ -179,7 +179,7 @@ export const AdminCandidates = () => {
             <button
               type="button"
               onClick={() => { setYearOfStudy('3rd Year'); setCurrentPage(1); }}
-              className={`px-3.5 py-1 rounded-full transition-all ${
+              className={`px-3.5 py-1 rounded-full shrink-0 whitespace-nowrap transition-all ${
                 yearOfStudy === '3rd Year'
                   ? 'bg-white text-amber-700 font-semibold shadow-2xs'
                   : 'text-[#737373] hover:text-[#171717]'

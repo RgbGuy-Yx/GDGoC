@@ -129,31 +129,31 @@ export const CandidateProfilePage = () => {
     <div className="space-y-6">
       {/* Back button & Candidate Title */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div className="flex items-center gap-3">
+        <div className="flex items-start sm:items-center gap-3">
           <button
             onClick={() => navigate(-1)}
-            className="p-2 rounded-full border border-[#E5E5E5] bg-white hover:bg-[#F4F4F4] text-[#171717] transition-all shadow-2xs"
+            className="p-2 rounded-full border border-[#E5E5E5] bg-white hover:bg-[#F4F4F4] text-[#171717] transition-all shadow-2xs shrink-0 mt-0.5 sm:mt-0"
             title="Back to previous list"
           >
             <ArrowLeft className="w-4 h-4" />
           </button>
-          <div>
+          <div className="min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
-              <h2 className="text-2xl font-bold text-[#171717] tracking-tight">
+              <h2 className="text-xl sm:text-2xl font-bold text-[#171717] tracking-tight">
                 {candidate.name || candidate.rollNumber}
               </h2>
               {candidate.name && (
-                <span className="text-sm font-medium text-[#737373]">
+                <span className="text-xs sm:text-sm font-medium text-[#737373]">
                   ({candidate.rollNumber})
                 </span>
               )}
-              <span className="text-xs font-mono bg-[#F4F4F4] text-[#525252] px-2.5 py-0.5 rounded-full border border-[#E5E5E5]">
+              <span className="text-[11px] font-mono bg-[#F4F4F4] text-[#525252] px-2.5 py-0.5 rounded-full border border-[#E5E5E5]">
                 {candidate.candidateId}
               </span>
               <ShortlistBadge status={candidate.shortlistStatus} />
               <FinalStatusBadge status={candidate.finalSelectionStatus} />
             </div>
-            <p className="text-xs text-[#737373] mt-0.5">
+            <p className="text-xs text-[#737373] mt-1">
               Applied: {new Date(candidate.createdAt).toLocaleDateString()} · Year {candidate.yearOfStudy} · {candidate.branch}
             </p>
           </div>
@@ -161,12 +161,12 @@ export const CandidateProfilePage = () => {
 
         {/* Action Controls: Only authorized active Team Leads can shortlist / unshortlist */}
         {isCurrentLead && (
-          <div className="flex items-center gap-2 flex-wrap">
+          <div className="flex items-center gap-2 flex-wrap w-full sm:w-auto">
             {candidate.shortlistStatus === 'SHORTLISTED' ? (
               <button
                 disabled={updatingShortlist}
                 onClick={() => handleShortlistToggle('REJECTED')}
-                className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold rounded-full bg-[#FAFAFA] text-[#737373] hover:text-[#171717] border border-[#E5E5E5] transition-all"
+                className="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-4 py-2.5 sm:py-2 text-xs font-semibold rounded-full bg-[#FAFAFA] text-[#737373] hover:text-[#171717] border border-[#E5E5E5] transition-all"
               >
                 <XCircle className="w-3.5 h-3.5 text-rose-500" />
                 Unshortlist Candidate
@@ -175,7 +175,7 @@ export const CandidateProfilePage = () => {
               <button
                 disabled={updatingShortlist}
                 onClick={() => handleShortlistToggle('SHORTLISTED')}
-                className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold rounded-full bg-[#7AF1A7] text-[#171717] hover:bg-[#6be499] active:scale-[0.98] transition-all shadow-2xs"
+                className="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-4 py-2.5 sm:py-2 text-xs font-semibold rounded-full bg-[#7AF1A7] text-[#171717] hover:bg-[#6be499] active:scale-[0.98] transition-all shadow-2xs"
               >
                 <CheckCircle2 className="w-3.5 h-3.5 text-[#166534]" />
                 Shortlist Candidate
@@ -186,7 +186,7 @@ export const CandidateProfilePage = () => {
               <button
                 disabled={updatingShortlist}
                 onClick={() => handleShortlistToggle('PENDING')}
-                className="px-4 py-2 text-xs font-medium text-[#525252] hover:bg-[#F4F4F4] border border-[#E5E5E5] rounded-full transition-all"
+                className="flex-1 sm:flex-none px-4 py-2.5 sm:py-2 text-xs font-medium text-[#525252] hover:bg-[#F4F4F4] border border-[#E5E5E5] rounded-full transition-all"
               >
                 Reset to Pending
               </button>
@@ -241,11 +241,11 @@ export const CandidateProfilePage = () => {
       )}
 
       {/* Main Grid: Left side Google Form Responses, Right side Evaluations & Transfer */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
         {/* Left 2 Columns: All 15 Google Form Responses Organized */}
-        <div className="lg:col-span-2 space-y-5">
+        <div className="lg:col-span-2 space-y-4 sm:space-y-5">
           {/* Section 1: Domain & Assignment Status Card */}
-          <div className="bg-white rounded-2xl border border-[#E5E5E5] p-6 shadow-ambient">
+          <div className="bg-white rounded-2xl border border-[#E5E5E5] p-4 sm:p-6 shadow-ambient">
             <h3 className="text-xs font-bold text-[#171717] uppercase tracking-wider mb-4 pb-2 border-b border-[#F4F4F4] flex items-center gap-2">
               <Layers className="w-4 h-4 text-[#171717]" />
               Domain Assignment & Application State
