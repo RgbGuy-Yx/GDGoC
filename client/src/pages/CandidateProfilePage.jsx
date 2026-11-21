@@ -24,7 +24,8 @@ import {
   MessageSquare,
   AlertCircle,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  RotateCcw
 } from 'lucide-react';
 
 export const CandidateProfilePage = () => {
@@ -175,66 +176,75 @@ export const CandidateProfilePage = () => {
 
         {/* Action Controls & Fast Next/Prev Candidate Navigation */}
         <div className="flex items-center gap-2.5 flex-wrap w-full sm:w-auto justify-between sm:justify-end">
-          {/* Authorized active Team Leads Interview Decision Controls */}
+          {/* Authorized active Team Leads Interview Decision Dropdown + Reset */}
           {isCurrentLead && (
-            <div className="flex items-center gap-1.5 flex-wrap flex-1 sm:flex-none">
-              {/* Shortlist */}
-              <button
-                type="button"
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <select
+                value={candidate.shortlistStatus === 'PENDING' ? '' : candidate.shortlistStatus}
+                onChange={(e) => handleShortlistToggle(e.target.value)}
                 disabled={updatingShortlist}
-                onClick={() => handleShortlistToggle('SHORTLISTED')}
-                className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold rounded-full transition-all shadow-2xs active:scale-[0.98] ${
+                className={`px-3.5 py-1.5 text-xs font-semibold rounded-full border focus:outline-none focus:ring-2 focus:ring-[#171717] transition-all cursor-pointer shadow-2xs ${
                   candidate.shortlistStatus === 'SHORTLISTED'
-                    ? 'bg-[#7AF1A7] text-[#166534] ring-2 ring-[#166534]/30'
-                    : 'bg-[#7AF1A7] text-[#171717] hover:bg-[#6be499]'
+                    ? 'bg-[#F0FDF4] text-[#166534] border-[#B8F7CF]'
+                    : candidate.shortlistStatus === 'WAITLISTED'
+                    ? 'bg-[#FFFBEB] text-[#92400E] border-[#FDE68A]'
+                    : candidate.shortlistStatus === 'REJECTED'
+                    ? 'bg-rose-50 text-rose-700 border-rose-200'
+                    : 'bg-white text-[#171717] border-[#E5E5E5] hover:border-slate-300'
                 }`}
               >
-                <CheckCircle2 className="w-3.5 h-3.5 text-[#166534]" />
-                <span>Shortlist</span>
-              </button>
+                <option value="" disabled>Set Decision...</option>
+                <option value="SHORTLISTED">Shortlist</option>
+                <option value="WAITLISTED">Waitlist</option>
+                <option value="REJECTED">Reject</option>
+              </select>
 
-              {/* In Review */}
               <button
                 type="button"
-                disabled={updatingShortlist}
-                onClick={() => handleShortlistToggle('IN_REVIEW')}
-                className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-full border transition-all ${
-                  candidate.shortlistStatus === 'IN_REVIEW'
-                    ? 'bg-[#171717] text-white border-[#171717] font-semibold'
-                    : 'bg-white text-[#525252] border-[#E5E5E5] hover:bg-[#F4F4F4]'
+                disabled={updatingShortlist || candidate.shortlistStatus === 'PENDING'}
+                onClick={() => handleShortlistToggle('PENDING')}
+                className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium rounded-full border border-[#E5E5E5] bg-white text-[#737373] hover:text-[#171717] hover:bg-[#F4F4F4] disabled:opacity-40 disabled:hover:bg-white transition-all shadow-2xs"
+                title="Reset decision to Pending"
+              >
+                <RotateCcw className="w-3 h-3 text-[#737373]" />
+                <span>Reset</span>
+              </button>
+            </div>
+          )}
+
+          {/* Organiser Final Admission Decision Dropdown + Reset in Header */}
+          {isAdmin && (
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <select
+                value={!candidate.finalSelectionStatus || candidate.finalSelectionStatus === 'PENDING' ? '' : candidate.finalSelectionStatus}
+                onChange={(e) => handleFinalStatusChange(e.target.value)}
+                disabled={updatingFinalStatus}
+                className={`px-3.5 py-1.5 text-xs font-semibold rounded-full border focus:outline-none focus:ring-2 focus:ring-[#171717] transition-all cursor-pointer shadow-2xs ${
+                  candidate.finalSelectionStatus === 'SELECTED'
+                    ? 'bg-[#171717] text-[#7AF1A7] border-[#171717]'
+                    : candidate.finalSelectionStatus === 'WAITLISTED'
+                    ? 'bg-[#FFFBEB] text-[#92400E] border-[#FDE68A]'
+                    : candidate.finalSelectionStatus === 'REJECTED'
+                    ? 'bg-rose-50 text-rose-700 border-rose-200'
+                    : 'bg-white text-[#171717] border-[#E5E5E5] hover:border-slate-300'
                 }`}
               >
-                <Clock className="w-3.5 h-3.5" />
-                <span>In Review</span>
-              </button>
+                <option value="" disabled>Final Admission...</option>
+                <option value="SELECTED">Shortlist</option>
+                <option value="WAITLISTED">Waitlist</option>
+                <option value="REJECTED">Reject</option>
+              </select>
 
-              {/* Reject */}
               <button
                 type="button"
-                disabled={updatingShortlist}
-                onClick={() => handleShortlistToggle('REJECTED')}
-                className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-full border transition-all ${
-                  candidate.shortlistStatus === 'REJECTED'
-                    ? 'bg-rose-50 text-rose-700 border-rose-300 font-semibold'
-                    : 'bg-white text-[#737373] hover:text-rose-600 border-[#E5E5E5] hover:border-rose-200'
-                }`}
+                disabled={updatingFinalStatus || !candidate.finalSelectionStatus || candidate.finalSelectionStatus === 'PENDING'}
+                onClick={() => handleFinalStatusChange('PENDING')}
+                className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium rounded-full border border-[#E5E5E5] bg-white text-[#737373] hover:text-[#171717] hover:bg-[#F4F4F4] disabled:opacity-40 disabled:hover:bg-white transition-all shadow-2xs"
+                title="Reset final status to Pending"
               >
-                <XCircle className="w-3.5 h-3.5 text-rose-500" />
-                <span>Reject</span>
+                <RotateCcw className="w-3 h-3 text-[#737373]" />
+                <span>Reset</span>
               </button>
-
-              {/* Reset to Pending */}
-              {candidate.shortlistStatus !== 'PENDING' && (
-                <button
-                  type="button"
-                  disabled={updatingShortlist}
-                  onClick={() => handleShortlistToggle('PENDING')}
-                  className="px-2.5 py-1.5 text-xs font-medium text-[#737373] hover:text-[#171717] hover:bg-[#F4F4F4] border border-[#E5E5E5] rounded-full transition-all"
-                  title="Reset status to Pending"
-                >
-                  Reset
-                </button>
-              )}
             </div>
           )}
 
@@ -322,61 +332,38 @@ export const CandidateProfilePage = () => {
               </div>
             </div>
 
-            {/* Decision Actions */}
+            {/* Decision Dropdown & Reset */}
             <div className="flex items-center gap-2 flex-wrap">
-              <button
-                type="button"
+              <select
+                value={!candidate.finalSelectionStatus || candidate.finalSelectionStatus === 'PENDING' ? '' : candidate.finalSelectionStatus}
+                onChange={(e) => handleFinalStatusChange(e.target.value)}
                 disabled={updatingFinalStatus}
-                onClick={() => handleFinalStatusChange('SELECTED')}
-                className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold rounded-full transition-all shadow-2xs active:scale-[0.98] ${
+                className={`px-3.5 py-1.5 text-xs font-semibold rounded-full border focus:outline-none focus:ring-2 focus:ring-[#171717] transition-all cursor-pointer shadow-2xs ${
                   candidate.finalSelectionStatus === 'SELECTED'
-                    ? 'bg-[#171717] text-[#7AF1A7] ring-2 ring-[#7AF1A7]'
-                    : 'bg-[#171717] text-white hover:bg-black'
+                    ? 'bg-[#171717] text-[#7AF1A7] border-[#171717]'
+                    : candidate.finalSelectionStatus === 'WAITLISTED'
+                    ? 'bg-[#FFFBEB] text-[#92400E] border-[#FDE68A]'
+                    : candidate.finalSelectionStatus === 'REJECTED'
+                    ? 'bg-rose-50 text-rose-700 border-rose-200'
+                    : 'bg-white text-[#171717] border-[#E5E5E5] hover:border-slate-300'
                 }`}
               >
-                <CheckCircle2 className="w-3.5 h-3.5 text-[#7AF1A7]" />
-                <span>Selected Member</span>
-              </button>
+                <option value="" disabled>Set Decision...</option>
+                <option value="SELECTED">Shortlist</option>
+                <option value="WAITLISTED">Waitlist</option>
+                <option value="REJECTED">Reject</option>
+              </select>
 
               <button
                 type="button"
-                disabled={updatingFinalStatus}
-                onClick={() => handleFinalStatusChange('WAITLISTED')}
-                className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-medium rounded-full border transition-all ${
-                  candidate.finalSelectionStatus === 'WAITLISTED'
-                    ? 'bg-[#FFFBEB] text-[#92400E] border-[#F59E0B] ring-2 ring-[#FDE68A] font-semibold'
-                    : 'bg-white text-[#92400E] border-[#FDE68A] hover:bg-[#FFFBEB]'
-                }`}
+                disabled={updatingFinalStatus || !candidate.finalSelectionStatus || candidate.finalSelectionStatus === 'PENDING'}
+                onClick={() => handleFinalStatusChange('PENDING')}
+                className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-[#737373] hover:text-[#171717] hover:bg-[#F4F4F4] border border-[#E5E5E5] rounded-full transition-all disabled:opacity-40 shadow-2xs"
+                title="Reset final status to Pending"
               >
-                <Clock className="w-3.5 h-3.5 text-[#D97706]" />
-                <span>Waitlist</span>
+                <RotateCcw className="w-3 h-3 text-[#737373]" />
+                <span>Reset</span>
               </button>
-
-              <button
-                type="button"
-                disabled={updatingFinalStatus}
-                onClick={() => handleFinalStatusChange('REJECTED')}
-                className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-medium rounded-full border transition-all ${
-                  candidate.finalSelectionStatus === 'REJECTED'
-                    ? 'bg-rose-50 text-rose-700 border-rose-300 ring-2 ring-rose-100 font-semibold'
-                    : 'bg-white text-[#737373] hover:text-rose-600 border-[#E5E5E5] hover:border-rose-200'
-                }`}
-              >
-                <XCircle className="w-3.5 h-3.5 text-rose-500" />
-                <span>Reject</span>
-              </button>
-
-              {candidate.finalSelectionStatus && candidate.finalSelectionStatus !== 'PENDING' && (
-                <button
-                  type="button"
-                  disabled={updatingFinalStatus}
-                  onClick={() => handleFinalStatusChange('PENDING')}
-                  className="px-3 py-1.5 text-xs font-medium text-[#737373] hover:text-[#171717] hover:bg-[#F4F4F4] border border-[#E5E5E5] rounded-full transition-all"
-                  title="Reset final status to Pending"
-                >
-                  Reset
-                </button>
-              )}
             </div>
           </div>
         </div>

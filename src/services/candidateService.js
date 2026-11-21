@@ -277,10 +277,10 @@ const getCandidateDetails = async (candidate, user = null, queryParams = {}) => 
 
 /**
  * Update Shortlist Status
- * Valid values: PENDING, SHORTLISTED, REJECTED, IN_REVIEW
+ * Valid values: PENDING, SHORTLISTED, WAITLISTED, REJECTED, IN_REVIEW
  */
 const updateShortlistStatus = async (candidate, status) => {
-  const allowedStatuses = ['PENDING', 'SHORTLISTED', 'REJECTED', 'IN_REVIEW'];
+  const allowedStatuses = ['PENDING', 'SHORTLISTED', 'WAITLISTED', 'REJECTED', 'IN_REVIEW'];
   const normalizedStatus = (status || '').toUpperCase();
 
   if (!allowedStatuses.includes(normalizedStatus)) {

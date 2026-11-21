@@ -155,7 +155,7 @@ const candidateSchema = new mongoose.Schema(
     // Shortlist Status
     shortlistStatus: {
       type: String,
-      enum: ['PENDING', 'SHORTLISTED', 'REJECTED', 'IN_REVIEW'],
+      enum: ['PENDING', 'SHORTLISTED', 'WAITLISTED', 'REJECTED', 'IN_REVIEW'],
       default: 'PENDING',
       index: true
     },

@@ -9,6 +9,11 @@ export const ShortlistBadge = ({ status }) => {
       className: 'bg-[#F0FDF4] text-[#166534] border-[#B8F7CF]',
       dot: 'bg-[#7AF1A7]'
     },
+    WAITLISTED: {
+      label: 'Waitlisted',
+      className: 'bg-[#FFFBEB] text-[#92400E] border-[#FDE68A]',
+      dot: 'bg-[#F59E0B]'
+    },
     PENDING: {
       label: 'Pending',
       className: 'bg-[#FFFBEB] text-[#92400E] border-[#FDE68A]',
