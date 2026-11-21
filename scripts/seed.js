@@ -107,9 +107,11 @@ const seedDatabase = async () => {
         { sheet: 'Production', domain: 'Production (Team Chitrakaar)' }
       ];
 
-      // Reset existing candidates to ensure an accurate 1:1 match with the spreadsheet
+      // Reset existing candidates, evaluations, and transfer logs for a brand new state
       await Candidate.deleteMany({});
-      console.log('[Seed] Cleared existing candidate documents for fresh synchronization.');
+      await Evaluation.deleteMany({});
+      await TransferLog.deleteMany({});
+      console.log('[Seed] Cleared candidates, evaluations, and transfer logs for fresh synchronization.');
 
       const candidatesToInsert = [];
 
