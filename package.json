@@ -1,0 +1,44 @@
+{
+  "name": "gdgoc-vjit-recruitment-backend",
+  "version": "1.0.0",
+  "description": "Backend foundation for GDGoC VJIT Recruitment Management System",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "seed": "node scripts/seed.js",
+    "create-sample": "node scripts/createSampleSpreadsheet.js",
+    "test": "jest --runInBand --detectOpenHandles --forceExit",
+    "client": "npm run dev --prefix client",
+    "client:build": "npm run build --prefix client"
+  },
+  "keywords": [
+    "gdgoc",
+    "recruitment",
+    "express",
+    "mongoose",
+    "jwt",
+    "backend"
+  ],
+  "author": "GDGoC VJIT",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.5",
+    "dotenv": "^17.3.1",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.12.1",
+    "multer": "^1.4.5-lts.1",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "mongodb-memory-server": "^10.1.4",
+    "supertest": "^7.0.0"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testTimeout": 30000
+  }
+}

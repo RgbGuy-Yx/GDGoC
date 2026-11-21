@@ -1,0 +1,62 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-[#FAFAFA] text-[#171717] antialiased font-sans;
+    letter-spacing: -0.011em;
+  }
+
+  ::selection {
+    background-color: #B8F7CF;
+    color: #171717;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply text-[#171717] tracking-tight;
+  }
+}
+
+/* Custom minimal hairline scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #E5E5E5;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #D4D4D4;
+}
+
+/* Common Handcrafted Design Utilities */
+@layer components {
+  .btn-pill-primary {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full bg-[#171717] text-white text-xs font-medium hover:bg-[#262626] active:scale-[0.98] transition-all shadow-2xs;
+  }
+
+  .btn-pill-mint {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full bg-[#7AF1A7] text-[#171717] text-xs font-semibold hover:bg-[#6be499] active:scale-[0.98] transition-all shadow-2xs;
+  }
+
+  .btn-pill-secondary {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full bg-white text-[#171717] text-xs font-medium border border-[#E5E5E5] hover:bg-[#F4F4F4] active:scale-[0.98] transition-all shadow-2xs;
+  }
+
+  .card-handcrafted {
+    @apply bg-white rounded-2xl border border-[#E5E5E5] shadow-ambient;
+  }
+}
