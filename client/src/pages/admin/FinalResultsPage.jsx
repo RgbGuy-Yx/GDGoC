@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { getAllCandidates, updateFinalSelectionStatus } from '../../api/candidateApi';
 import { useDomains } from '../../hooks/useDomains';
 import { ShortlistBadge, FinalStatusBadge, DomainBadge, YearBadge } from '../../components/common/Badge';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   CheckCircle2,
   Search,
@@ -23,6 +23,7 @@ import {
 } from 'lucide-react';
 
 export const FinalResultsPage = () => {
+  const navigate = useNavigate();
   const { domains } = useDomains();
   const [candidates, setCandidates] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -33,6 +34,21 @@ export const FinalResultsPage = () => {
   const [finalStatusFilter, setFinalStatusFilter] = useState('ALL');
   const [updatingId, setUpdatingId] = useState(null);
   const [copyFeedback, setCopyFeedback] = useState('');
+
+  const handleCandidateView = (candidateId) => {
+    if (!candidateId) return;
+    const candidateIds = filteredCandidates.map((c) => c._id);
+    try {
+      sessionStorage.setItem('gdgoc_candidate_nav_ids', JSON.stringify(candidateIds));
+    } catch (e) {}
+
+    navigate(`/admin/candidates/${candidateId}`, {
+      state: {
+        candidateIds,
+        returnUrl: '/admin/final-results'
+      }
+    });
+  };
 
   const fetchCandidates = async () => {
     setLoading(true);
@@ -598,13 +614,14 @@ export const FinalResultsPage = () => {
                       )}
                     </div>
 
-                    <Link
-                      to={`/admin/candidates/${c._id}`}
-                      className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium text-[#171717] bg-[#F4F4F4] hover:bg-[#E5E5E5] transition-all"
+                    <button
+                      type="button"
+                      onClick={() => handleCandidateView(c._id)}
+                      className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium text-[#171717] bg-[#F4F4F4] hover:bg-[#E5E5E5] transition-all cursor-pointer"
                     >
                       <span>Profile</span>
                       <ChevronRight className="w-3.5 h-3.5" />
-                    </Link>
+                    </button>
                   </div>
                 </div>
               );
@@ -725,13 +742,14 @@ export const FinalResultsPage = () => {
 
                         {/* View Profile */}
                         <td className="py-3.5 px-4 text-right">
-                          <Link
-                            to={`/admin/candidates/${c._id}`}
-                            className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium text-[#171717] bg-[#F4F4F4] hover:bg-[#E5E5E5] transition-all"
+                          <button
+                            type="button"
+                            onClick={() => handleCandidateView(c._id)}
+                            className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium text-[#171717] bg-[#F4F4F4] hover:bg-[#E5E5E5] transition-all cursor-pointer"
                           >
                             <span>View</span>
                             <ChevronRight className="w-3.5 h-3.5" />
-                          </Link>
+                          </button>
                         </td>
                       </tr>
                     );

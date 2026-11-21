@@ -65,11 +65,19 @@ const getAllCandidates = async (filters = {}) => {
     ];
   }
 
-  let sortOption = { createdAt: -1 };
+  let sortOption = { yearOfStudy: 1, rollNumber: 1 };
   if (sortBy === 'year' || sortBy === 'year_asc') {
-    sortOption = { yearOfStudy: 1, createdAt: -1 };
+    sortOption = { yearOfStudy: 1, rollNumber: 1 };
   } else if (sortBy === 'year_desc') {
-    sortOption = { yearOfStudy: -1, createdAt: -1 };
+    sortOption = { yearOfStudy: -1, rollNumber: 1 };
+  } else if (sortBy === 'roll_asc') {
+    sortOption = { rollNumber: 1 };
+  } else if (sortBy === 'roll_desc') {
+    sortOption = { rollNumber: -1 };
+  } else if (sortBy === 'created_asc') {
+    sortOption = { createdAt: 1 };
+  } else if (sortBy === 'created_desc') {
+    sortOption = { createdAt: -1 };
   }
 
   const pageNum = Math.max(1, parseInt(page, 10));
@@ -179,11 +187,19 @@ const getAssignedCandidates = async (leadUser, filters = {}) => {
     }
   }
 
-  let sortOption = { createdAt: -1 };
+  let sortOption = { yearOfStudy: 1, rollNumber: 1 };
   if (sortBy === 'year' || sortBy === 'year_asc') {
-    sortOption = { yearOfStudy: 1, createdAt: -1 };
+    sortOption = { yearOfStudy: 1, rollNumber: 1 };
   } else if (sortBy === 'year_desc') {
-    sortOption = { yearOfStudy: -1, createdAt: -1 };
+    sortOption = { yearOfStudy: -1, rollNumber: 1 };
+  } else if (sortBy === 'roll_asc') {
+    sortOption = { rollNumber: 1 };
+  } else if (sortBy === 'roll_desc') {
+    sortOption = { rollNumber: -1 };
+  } else if (sortBy === 'created_asc') {
+    sortOption = { createdAt: 1 };
+  } else if (sortBy === 'created_desc') {
+    sortOption = { createdAt: -1 };
   }
 
   const pageNum = Math.max(1, parseInt(page, 10));
@@ -240,16 +256,45 @@ const getCandidateDetails = async (candidate, user = null, queryParams = {}) => 
         ]
       };
     } else {
-      domainFilter = { currentDomain: candidate.currentDomain };
+      if (queryParams && queryParams.domain && queryParams.domain.toUpperCase() !== 'ALL') {
+        domainFilter.currentDomain = new RegExp(`^${escapeRegex(queryParams.domain.trim())}$`, 'i');
+      } else {
+        domainFilter.currentDomain = candidate.currentDomain;
+      }
     }
 
-    if (queryParams && queryParams.yearOfStudy) {
-      domainFilter.yearOfStudy = queryParams.yearOfStudy;
+    const selectedYear = queryParams?.yearOfStudy || queryParams?.year;
+    if (selectedYear && selectedYear.toUpperCase() !== 'ALL') {
+      const yr = selectedYear.trim();
+      if (/^1/i.test(yr)) {
+        domainFilter.yearOfStudy = new RegExp('^1', 'i');
+      } else if (/^2/i.test(yr)) {
+        domainFilter.yearOfStudy = new RegExp('^2', 'i');
+      } else if (/^3/i.test(yr)) {
+        domainFilter.yearOfStudy = new RegExp('^3', 'i');
+      } else if (/^4/i.test(yr)) {
+        domainFilter.yearOfStudy = new RegExp('^4', 'i');
+      } else {
+        domainFilter.yearOfStudy = new RegExp(`^${escapeRegex(yr)}$`, 'i');
+      }
     }
 
-    // Sort by interview priority (1st Year first, then roll number)
+    if (queryParams && queryParams.shortlistStatus) {
+      domainFilter.shortlistStatus = queryParams.shortlistStatus.toUpperCase();
+    }
+
+    // Sort by consistent canonical order (1st Year first, then roll number ascending)
+    let siblingSort = { yearOfStudy: 1, rollNumber: 1 };
+    if (queryParams?.sortBy === 'year_desc') {
+      siblingSort = { yearOfStudy: -1, rollNumber: 1 };
+    } else if (queryParams?.sortBy === 'roll_desc') {
+      siblingSort = { rollNumber: -1 };
+    } else if (queryParams?.sortBy === 'roll_asc') {
+      siblingSort = { rollNumber: 1 };
+    }
+
     const siblings = await Candidate.find(domainFilter, '_id name rollNumber candidateId yearOfStudy')
-      .sort({ yearOfStudy: 1, rollNumber: 1 });
+      .sort(siblingSort);
 
     const currentIndex = siblings.findIndex((s) => s._id.toString() === candidate._id.toString());
 

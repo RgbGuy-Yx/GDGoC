@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { ShortlistBadge, FinalStatusBadge, DomainBadge, YearBadge } from '../common/Badge';
 import { ChevronRight, ArrowRight, User, Phone, Mail } from 'lucide-react';
@@ -10,8 +10,24 @@ export const CandidateTable = ({
   baseDetailPath
 }) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { user } = useAuth();
   const detailPath = baseDetailPath || (user?.role === 'lead' ? '/lead/candidates' : '/admin/candidates');
+
+  const handleCandidateClick = (candidateId) => {
+    if (!candidateId) return;
+    const candidateIds = candidates.map((item) => item._id);
+    try {
+      sessionStorage.setItem('gdgoc_candidate_nav_ids', JSON.stringify(candidateIds));
+    } catch (e) {}
+
+    navigate(`${detailPath}/${candidateId}${location.search}`, {
+      state: {
+        candidateIds,
+        returnUrl: `${location.pathname}${location.search}`
+      }
+    });
+  };
 
   if (loading) {
     return (
@@ -47,7 +63,7 @@ export const CandidateTable = ({
           return (
             <div
               key={c._id}
-              onClick={() => navigate(`${detailPath}/${c._id}`)}
+              onClick={() => handleCandidateClick(c._id)}
               className="p-4 rounded-2xl bg-white border border-[#E5E5E5] shadow-2xs hover:border-[#7AF1A7] active:bg-[#F0FDF4]/40 active:scale-[0.99] transition-all cursor-pointer space-y-3"
             >
               {/* Top row: Name & Shortlist Badge */}
@@ -121,7 +137,7 @@ export const CandidateTable = ({
                 return (
                   <tr
                     key={c._id}
-                    onClick={() => navigate(`${detailPath}/${c._id}`)}
+                    onClick={() => handleCandidateClick(c._id)}
                     className="hover:bg-[#F0FDF4]/35 cursor-pointer transition-colors group"
                   >
                     {/* Candidate Identification */}

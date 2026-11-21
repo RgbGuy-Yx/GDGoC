@@ -68,7 +68,9 @@ export const CandidateProfilePage = () => {
   const handleNavigateCandidate = (targetId) => {
     if (!targetId) return;
     const base = user?.role === 'lead' ? '/lead/candidates' : '/admin/candidates';
-    navigate(`${base}/${targetId}${location.search}`);
+    navigate(`${base}/${targetId}${location.search}`, {
+      state: location.state
+    });
   };
 
   const handleShortlistToggle = async (newStatus) => {
@@ -139,6 +141,42 @@ export const CandidateProfilePage = () => {
     leadDomains.some((d) => d.toLowerCase() === candidate.currentDomain?.toLowerCase()) ||
     (candidate.assignedLead?._id || candidate.assignedLead) === user?.id
   );
+
+  // Derive sequential navigation list:
+  // 1. From location.state?.candidateIds (exact table view order)
+  // 2. Or from sessionStorage 'gdgoc_candidate_nav_ids'
+  // 3. Fallback to candidate.navigation from backend
+  const navIds = location.state?.candidateIds || (() => {
+    try {
+      const stored = sessionStorage.getItem('gdgoc_candidate_nav_ids');
+      return stored ? JSON.parse(stored) : null;
+    } catch {
+      return null;
+    }
+  })();
+
+  let effectivePrevId = null;
+  let effectiveNextId = null;
+  let effectiveIndex = candidate?.navigation?.currentIndex || null;
+  let effectiveTotal = candidate?.navigation?.totalCandidates || null;
+
+  if (Array.isArray(navIds) && navIds.length > 0 && candidate?._id) {
+    const idx = navIds.indexOf(candidate._id);
+    if (idx !== -1) {
+      effectiveIndex = idx + 1;
+      effectiveTotal = navIds.length;
+      effectivePrevId = idx > 0 ? navIds[idx - 1] : null;
+      effectiveNextId = idx < navIds.length - 1 ? navIds[idx + 1] : null;
+    }
+  }
+
+  // Fallback to backend navigation if not in array or boundary
+  if (!effectivePrevId && candidate?.navigation?.prev?.id) {
+    effectivePrevId = candidate.navigation.prev.id;
+  }
+  if (!effectiveNextId && candidate?.navigation?.next?.id) {
+    effectiveNextId = candidate.navigation.next.id;
+  }
 
   return (
     <div className="space-y-6">
@@ -252,12 +290,12 @@ export const CandidateProfilePage = () => {
           <div className="inline-flex items-center p-1 rounded-full bg-white border border-[#E5E5E5] shadow-2xs shrink-0 ml-auto sm:ml-0">
             <button
               type="button"
-              onClick={() => handleNavigateCandidate(candidate.navigation?.prev?.id)}
-              disabled={!candidate.navigation?.prev}
+              onClick={() => handleNavigateCandidate(effectivePrevId)}
+              disabled={!effectivePrevId}
               className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium text-[#525252] hover:text-[#171717] hover:bg-[#F4F4F4] disabled:opacity-35 disabled:hover:bg-transparent transition-all"
               title={
-                candidate.navigation?.prev
-                  ? `Previous: ${candidate.navigation.prev.name || candidate.navigation.prev.rollNumber}`
+                effectivePrevId
+                  ? 'Previous candidate in order'
                   : 'Start of candidate list'
               }
             >
@@ -265,20 +303,20 @@ export const CandidateProfilePage = () => {
               <span className="hidden sm:inline">Prev</span>
             </button>
 
-            {candidate.navigation?.currentIndex && (
+            {effectiveIndex && (
               <span className="px-2.5 text-[11px] font-mono font-medium text-[#737373] border-x border-[#E5E5E5]">
-                {candidate.navigation.currentIndex} / {candidate.navigation.totalCandidates}
+                {effectiveIndex} / {effectiveTotal}
               </span>
             )}
 
             <button
               type="button"
-              onClick={() => handleNavigateCandidate(candidate.navigation?.next?.id)}
-              disabled={!candidate.navigation?.next}
+              onClick={() => handleNavigateCandidate(effectiveNextId)}
+              disabled={!effectiveNextId}
               className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-semibold bg-[#171717] text-white hover:bg-black disabled:bg-[#E5E5E5] disabled:text-[#A3A3A3] transition-all shadow-2xs active:scale-[0.98]"
               title={
-                candidate.navigation?.next
-                  ? `Next: ${candidate.navigation.next.name || candidate.navigation.next.rollNumber}`
+                effectiveNextId
+                  ? 'Next candidate in order'
                   : 'Last candidate reached'
               }
             >
