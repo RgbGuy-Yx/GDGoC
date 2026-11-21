@@ -60,8 +60,11 @@ export const CandidateTable = ({
                     {c.rollNumber} {c.candidateId ? `· ${c.candidateId}` : ''}
                   </p>
                 </div>
-                <div className="flex items-center gap-1.5 shrink-0">
+                <div className="flex items-center gap-1.5 shrink-0 flex-wrap justify-end">
                   <ShortlistBadge status={c.shortlistStatus} />
+                  {c.finalSelectionStatus && c.finalSelectionStatus !== 'PENDING' && (
+                    <FinalStatusBadge status={c.finalSelectionStatus} />
+                  )}
                   <ChevronRight className="w-4 h-4 text-[#A3A3A3]" />
                 </div>
               </div>
