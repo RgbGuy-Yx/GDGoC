@@ -74,6 +74,7 @@ export const CandidateProfilePage = () => {
   };
 
   const handleShortlistToggle = async (newStatus) => {
+    if (newStatus === 'REJECTED' && !window.confirm('Reject this candidate?')) return;
     setUpdatingShortlist(true);
     setActionSuccess('');
     setError('');
@@ -678,10 +679,10 @@ export const CandidateProfilePage = () => {
         </div>
 
         {/* Right 1 Column: Evaluations, Transfers & Action Forms */}
-        <div className="space-y-6">
+        <div className="space-y-6 lg:self-start lg:sticky lg:top-4 lg:max-h-[calc(100vh-2rem)] lg:overflow-y-auto">
           {/* Add Interview Evaluation Form - Active Domain Team Leads Only */}
           {isCurrentLead && (
-            <EvaluationForm
+            <EvaluationForm key={candidate._id}
               candidateId={candidate._id}
               onEvaluationAdded={(newEval) => {
                 setCandidate((prev) => ({
