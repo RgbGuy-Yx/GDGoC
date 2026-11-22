@@ -1,28 +1,38 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { getTransferredByMe } from '../../api/transferApi';
-import { ArrowUpRight, ArrowRight, User, Calendar, Info, Layers } from 'lucide-react';
-import { DomainBadge } from '../../components/common/Badge';
+import { ArrowUpRight, ArrowRight, Calendar, RefreshCw } from 'lucide-react';
 
 export const TransferredByMe = () => {
   const [transfers, setTransfers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
+    let cancelled = false;
     const fetchTransfers = async () => {
       setLoading(true);
+      setError('');
       try {
         const res = await getTransferredByMe();
+        if (cancelled) return;
         if (res.success) {
           setTransfers(res.data || []);
+        } else {
+          setError('The server did not return your transfers.');
         }
       } catch (err) {
-        console.error('Failed to load transfers:', err);
+        if (!cancelled) setError(err.message || 'Network or server error.');
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     };
     fetchTransfers();
-  }, []);
+    return () => {
+      cancelled = true;
+    };
+  }, [refreshKey]);
 
   return (
     <div className="space-y-6">
@@ -36,18 +46,33 @@ export const TransferredByMe = () => {
             Audit log of candidates you transferred out to another technical or non-technical domain
           </p>
         </div>
-        <span className="px-3.5 py-1.5 rounded-full bg-white border border-[#E5E5E5] text-[#171717] text-xs font-semibold self-start sm:self-auto shadow-2xs">
-          {transfers.length} Outbound Transfers
-        </span>
+        {!error && !loading && (
+          <span className="px-3.5 py-1.5 rounded-full bg-white border border-[#E5E5E5] text-[#171717] text-xs font-semibold self-start sm:self-auto shadow-2xs">
+            {transfers.length} Outbound Transfers
+          </span>
+        )}
       </div>
 
       {loading ? (
-        <div className="bg-white rounded-2xl border border-[#E5E5E5] p-12 text-center shadow-ambient">
+        <div role="status" className="bg-white rounded-2xl border border-[#E5E5E5] p-12 text-center shadow-ambient">
           <div className="w-8 h-8 border-2 border-[#E5E5E5] border-t-[#171717] rounded-full animate-spin mx-auto mb-2" />
           <p className="text-xs text-[#737373] font-medium">Loading transfer logs...</p>
         </div>
+      ) : error ? (
+        <div role="alert" className="bg-white rounded-2xl border border-rose-200 p-10 text-center shadow-ambient">
+          <p className="text-sm font-semibold text-[#171717]">Could not load your transfers</p>
+          <p className="text-xs text-[#737373] mt-1">{error}</p>
+          <button
+            type="button"
+            onClick={() => setRefreshKey((k) => k + 1)}
+            className="mt-4 inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold rounded-full bg-white border border-[#E5E5E5] text-[#171717] hover:bg-[#F4F4F4] transition-colors shadow-2xs"
+          >
+            <RefreshCw className="w-3.5 h-3.5" />
+            Try again
+          </button>
+        </div>
       ) : transfers.length === 0 ? (
-        <div className="bg-white rounded-2xl border border-[#E5E5E5] p-12 text-center text-xs text-[#737373] shadow-ambient">
+        <div role="status" className="bg-white rounded-2xl border border-[#E5E5E5] p-12 text-center text-xs text-[#737373] shadow-ambient">
           <ArrowUpRight className="w-8 h-8 text-[#A3A3A3] mx-auto mb-2" />
           <p className="font-semibold text-[#171717]">No outbound transfers</p>
           <p className="mt-0.5 text-[#737373]">
@@ -73,10 +98,20 @@ export const TransferredByMe = () => {
                   <span className="text-xs text-[#737373]">{t.candidate?.email}</span>
                 </div>
 
-                <span className="inline-flex items-center gap-1.5 text-xs text-[#737373]">
-                  <Calendar className="w-3.5 h-3.5" />
-                  {new Date(t.timestamp || t.createdAt).toLocaleString()}
-                </span>
+                <div className="flex items-center gap-3">
+                  <span className="inline-flex items-center gap-1.5 text-xs text-[#737373]">
+                    <Calendar className="w-3.5 h-3.5" />
+                    {new Date(t.timestamp || t.createdAt).toLocaleString()}
+                  </span>
+                  {t.candidate?._id && (
+                    <Link
+                      to={`/lead/candidates/${t.candidate._id}`}
+                      className="text-xs font-medium text-[#1a73e8] hover:underline whitespace-nowrap"
+                    >
+                      View profile &rarr;
+                    </Link>
+                  )}
+                </div>
               </div>
 
               {/* Transfer path */}
