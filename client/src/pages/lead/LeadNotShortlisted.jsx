@@ -27,6 +27,12 @@ export const LeadNotShortlisted = () => {
     fetchCandidates();
   }, []);
 
+  const handleStatusChange = (candidateId, newStatus) => {
+    setCandidates((prev) =>
+      prev.map((c) => (c._id === candidateId ? { ...c, shortlistStatus: newStatus } : c))
+    );
+  };
+
   const pendingList = candidates.filter(
     (c) => c.shortlistStatus === 'PENDING' || c.shortlistStatus === 'IN_REVIEW'
   );
@@ -150,6 +156,7 @@ export const LeadNotShortlisted = () => {
         candidates={displayedList}
         loading={loading}
         baseDetailPath="/lead/candidates"
+        onStatusChange={handleStatusChange}
       />
     </div>
   );
