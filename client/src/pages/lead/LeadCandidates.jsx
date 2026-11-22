@@ -168,6 +168,7 @@ export const LeadCandidates = () => {
               <option value="PENDING">Pending</option>
               <option value="SHORTLISTED">Shortlisted</option>
               <option value="IN_REVIEW">In Review</option>
+              <option value="WAITLISTED">Waitlisted</option>
               <option value="REJECTED">Not Shortlisted</option>
             </select>
           </div>

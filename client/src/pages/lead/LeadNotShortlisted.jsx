@@ -31,13 +31,14 @@ export const LeadNotShortlisted = () => {
     (c) => c.shortlistStatus === 'PENDING' || c.shortlistStatus === 'IN_REVIEW'
   );
   const rejectedList = candidates.filter((c) => c.shortlistStatus === 'REJECTED');
+  const waitlistedList = candidates.filter((c) => c.shortlistStatus === 'WAITLISTED');
 
   let displayedList =
     activeTab === 'REJECTED'
       ? rejectedList
       : activeTab === 'PENDING'
         ? pendingList
-        : [...pendingList, ...rejectedList];
+        : [...pendingList, ...waitlistedList, ...rejectedList];
 
   if (selectedYear) {
     displayedList = displayedList.filter((c) => {
@@ -72,7 +73,7 @@ export const LeadNotShortlisted = () => {
               : 'hover:text-[#171717]'
               }`}
           >
-            All ({pendingList.length + rejectedList.length})
+            All ({pendingList.length + waitlistedList.length + rejectedList.length})
           </button>
           <button
             onClick={() => setActiveTab('PENDING')}

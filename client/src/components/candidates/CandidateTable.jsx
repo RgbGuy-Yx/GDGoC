@@ -1,18 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { ShortlistBadge, FinalStatusBadge, DomainBadge, YearBadge } from '../common/Badge';
-import { ChevronRight, ArrowRight, User, Phone, Mail } from 'lucide-react';
+import { updateShortlistStatus } from '../../api/candidateApi';
+import { ChevronRight, User, Check, X as XIcon } from 'lucide-react';
 
 export const CandidateTable = ({
   candidates = [],
   loading = false,
-  baseDetailPath
+  baseDetailPath,
+  onStatusChange
 }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuth();
   const detailPath = baseDetailPath || (user?.role === 'lead' ? '/lead/candidates' : '/admin/candidates');
+  const [updatingId, setUpdatingId] = useState(null);
 
   const handleCandidateClick = (candidateId) => {
     if (!candidateId) return;
@@ -27,6 +30,21 @@ export const CandidateTable = ({
         returnUrl: `${location.pathname}${location.search}`
       }
     });
+  };
+
+  const handleQuickAction = async (e, candidateId, status) => {
+    e.stopPropagation(); // don't trigger row navigation
+    setUpdatingId(candidateId);
+    try {
+      const res = await updateShortlistStatus(candidateId, status);
+      if (res.success && onStatusChange) {
+        onStatusChange(candidateId, status);
+      }
+    } catch (err) {
+      console.error('Failed to update shortlist status:', err);
+    } finally {
+      setUpdatingId(null);
+    }
   };
 
   if (loading) {
@@ -60,11 +78,12 @@ export const CandidateTable = ({
       <div className="block md:hidden space-y-2.5">
         {candidates.map((c) => {
           const isTransferred = c.originalDomain !== c.currentDomain;
+          const isUpdating = updatingId === c._id;
           return (
             <div
               key={c._id}
               onClick={() => handleCandidateClick(c._id)}
-              className="p-4 rounded-2xl bg-white border border-[#E5E5E5] shadow-2xs hover:border-[#7AF1A7] active:bg-[#F0FDF4]/40 active:scale-[0.99] transition-all cursor-pointer space-y-3"
+              className="p-4 rounded-2xl bg-white border border-[#E5E5E5] shadow-2xs hover:border-[#34A853] active:bg-[#E6F4EA]/40 active:scale-[0.99] transition-all cursor-pointer space-y-3"
             >
               {/* Top row: Name & Shortlist Badge */}
               <div className="flex items-start justify-between gap-2">
@@ -110,6 +129,28 @@ export const CandidateTable = ({
                   {c.phone && <span className="shrink-0">· {c.phone}</span>}
                 </div>
               )}
+
+              {/* Quick actions */}
+              {c.shortlistStatus !== 'SHORTLISTED' && c.shortlistStatus !== 'REJECTED' && (
+                <div className="flex items-center gap-2 pt-2 border-t border-[#F4F4F4]">
+                  <button
+                    type="button"
+                    disabled={isUpdating}
+                    onClick={(e) => handleQuickAction(e, c._id, 'SHORTLISTED')}
+                    className="flex-1 inline-flex items-center justify-center gap-1 text-xs font-semibold py-1.5 rounded-full bg-[#E6F4EA] text-[#137333] border border-[#34A853] hover:bg-[#34A853] hover:text-white transition-colors disabled:opacity-50"
+                  >
+                    <Check className="w-3.5 h-3.5" /> Shortlist
+                  </button>
+                  <button
+                    type="button"
+                    disabled={isUpdating}
+                    onClick={(e) => handleQuickAction(e, c._id, 'REJECTED')}
+                    className="flex-1 inline-flex items-center justify-center gap-1 text-xs font-semibold py-1.5 rounded-full bg-[#FAFAFA] text-[#737373] border border-[#E5E5E5] hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200 transition-colors disabled:opacity-50"
+                  >
+                    <XIcon className="w-3.5 h-3.5" /> Reject
+                  </button>
+                </div>
+              )}
             </div>
           );
         })}
@@ -121,24 +162,26 @@ export const CandidateTable = ({
           <table className="w-full text-left border-collapse text-xs">
             <thead>
               <tr className="bg-[#FAFAFA] border-b border-[#E5E5E5] text-[#737373] font-semibold uppercase tracking-wider text-[11px]">
-                <th className="py-3 px-4 font-medium">Candidate / Roll No</th>
-                <th className="py-3 px-4 font-medium">Contact</th>
-                <th className="py-3 px-4 font-medium">Year & Branch</th>
-                <th className="py-3 px-4 font-medium">Domain Status</th>
-                <th className="py-3 px-4 font-medium">Assigned Lead</th>
-                <th className="py-3 px-4 font-medium">Shortlist</th>
-                <th className="py-3 px-4 font-medium">Final Status</th>
-                <th className="py-3 px-4 text-right font-medium">Action</th>
+                <th scope="col" className="py-3 px-4 font-medium">Candidate / Roll No</th>
+                <th scope="col" className="py-3 px-4 font-medium">Contact</th>
+                <th scope="col" className="py-3 px-4 font-medium">Year & Branch</th>
+                <th scope="col" className="py-3 px-4 font-medium">Domain Status</th>
+                <th scope="col" className="py-3 px-4 font-medium">Assigned Lead</th>
+                <th scope="col" className="py-3 px-4 font-medium">Shortlist</th>
+                <th scope="col" className="py-3 px-4 font-medium">Final Status</th>
+                <th scope="col" className="py-3 px-4 text-right font-medium">Quick Action</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[#F4F4F4]">
               {candidates.map((c) => {
                 const isTransferred = c.originalDomain !== c.currentDomain;
+                const isUpdating = updatingId === c._id;
+                const canQuickAction = c.shortlistStatus !== 'SHORTLISTED' && c.shortlistStatus !== 'REJECTED';
                 return (
                   <tr
                     key={c._id}
                     onClick={() => handleCandidateClick(c._id)}
-                    className="hover:bg-[#F0FDF4]/35 cursor-pointer transition-colors group"
+                    className="hover:bg-[#E6F4EA]/35 cursor-pointer transition-colors group"
                   >
                     {/* Candidate Identification */}
                     <td className="py-3 px-4">
@@ -207,12 +250,36 @@ export const CandidateTable = ({
                       <FinalStatusBadge status={c.finalSelectionStatus} />
                     </td>
 
-                    {/* View Action */}
-                    <td className="py-3 px-4 text-right">
-                      <span className="inline-flex items-center gap-1 text-[11px] font-medium text-[#171717] group-hover:text-black py-1 px-3 rounded-full border border-[#E5E5E5] bg-white group-hover:bg-[#F4F4F4] transition-all">
-                        <span>Profile</span>
-                        <ChevronRight className="w-3 h-3 text-[#737373] group-hover:translate-x-0.5 transition-transform" />
-                      </span>
+                    {/* Quick Action / View Profile */}
+                    <td className="py-3 px-4">
+                      <div className="flex items-center justify-end gap-1.5">
+                        {canQuickAction ? (
+                          <>
+                            <button
+                              type="button"
+                              disabled={isUpdating}
+                              onClick={(e) => handleQuickAction(e, c._id, 'SHORTLISTED')}
+                              title="Shortlist"
+                              className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-[#E6F4EA] text-[#137333] border border-[#34A853] hover:bg-[#34A853] hover:text-white transition-colors disabled:opacity-50"
+                            >
+                              <Check className="w-3.5 h-3.5" />
+                            </button>
+                            <button
+                              type="button"
+                              disabled={isUpdating}
+                              onClick={(e) => handleQuickAction(e, c._id, 'REJECTED')}
+                              title="Reject"
+                              className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-[#FAFAFA] text-[#737373] border border-[#E5E5E5] hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200 transition-colors disabled:opacity-50"
+                            >
+                              <XIcon className="w-3.5 h-3.5" />
+                            </button>
+                          </>
+                        ) : null}
+                        <span className="inline-flex items-center gap-1 text-[11px] font-medium text-[#171717] group-hover:text-black py-1 px-3 rounded-full border border-[#E5E5E5] bg-white group-hover:bg-[#F4F4F4] transition-all">
+                          <span>Profile</span>
+                          <ChevronRight className="w-3 h-3 text-[#737373] group-hover:translate-x-0.5 transition-transform" />
+                        </span>
+                      </div>
                     </td>
                   </tr>
                 );
