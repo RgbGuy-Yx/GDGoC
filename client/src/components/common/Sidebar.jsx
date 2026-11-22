@@ -35,7 +35,7 @@ export const Sidebar = ({ isOpenMobile, onCloseMobile }) => {
     { to: '/lead', label: 'Overview', icon: LayoutDashboard, end: true },
     { to: '/lead/candidates', label: 'My Candidates', icon: Users },
     { to: '/lead/shortlisted', label: 'Shortlisted', icon: CheckCircle2 },
-    { to: '/lead/not-shortlisted', label: 'Pending / Not Shortlisted', icon: XCircle },
+    { to: '/lead/not-shortlisted', label: 'Pending & Not Shortlisted', icon: XCircle },
     { to: '/lead/transferred-to-me', label: 'Transferred to Me', icon: ArrowDownLeft },
     { to: '/lead/transferred-by-me', label: 'Transferred by Me', icon: ArrowUpRight },
   ];

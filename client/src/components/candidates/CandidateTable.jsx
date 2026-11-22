@@ -16,6 +16,8 @@ export const CandidateTable = ({
   const { user } = useAuth();
   const detailPath = baseDetailPath || (user?.role === 'lead' ? '/lead/candidates' : '/admin/candidates');
   const [updatingId, setUpdatingId] = useState(null);
+  // Leads only see their own domain, so these columns are hidden for them
+  const orgColClass = user?.role === 'lead' ? 'hidden' : 'hidden xl:table-cell';
 
   const handleCandidateClick = (candidateId) => {
     if (!candidateId) return;
@@ -165,8 +167,8 @@ export const CandidateTable = ({
                 <th scope="col" className="py-3 px-4 font-medium">Candidate / Roll No</th>
                 <th scope="col" className="py-3 px-4 font-medium">Contact</th>
                 <th scope="col" className="py-3 px-4 font-medium">Year & Branch</th>
-                <th scope="col" className="hidden xl:table-cell py-3 px-4 font-medium">Domain Status</th>
-                <th scope="col" className="hidden xl:table-cell py-3 px-4 font-medium">Assigned Lead</th>
+                <th scope="col" className={`${orgColClass} py-3 px-4 font-medium`}>Domain Status</th>
+                <th scope="col" className={`${orgColClass} py-3 px-4 font-medium`}>Assigned Lead</th>
                 <th scope="col" className="py-3 px-4 font-medium">Shortlist</th>
                 <th scope="col" className="py-3 px-4 font-medium">Final Status</th>
                 <th scope="col" className="py-3 px-4 text-right font-medium">Quick Action</th>
@@ -191,6 +193,11 @@ export const CandidateTable = ({
                       <span className="text-[10px] text-[#737373] font-mono tracking-tight block">
                         {c.rollNumber} {c.candidateId ? `· ${c.candidateId}` : ''}
                       </span>
+                      {isTransferred && user?.role === 'lead' && (
+                        <span className="text-[10px] bg-[#FFFBEB] text-amber-800 px-2 py-0.5 rounded-full border border-[#FDE68A] font-medium inline-block mt-1">
+                          Transferred
+                        </span>
+                      )}
                     </td>
 
                     {/* Contact */}
@@ -213,7 +220,7 @@ export const CandidateTable = ({
                     </td>
 
                     {/* Domain & Transfer info */}
-                    <td className="hidden xl:table-cell py-3 px-4">
+                    <td className={`${orgColClass} py-3 px-4`}>
                       <div className="space-y-1">
                         <div className="flex items-center gap-1.5">
                           <DomainBadge domain={c.currentDomain} />
@@ -232,7 +239,7 @@ export const CandidateTable = ({
                     </td>
 
                     {/* Assigned Lead */}
-                    <td className="hidden xl:table-cell py-3 px-4 text-[#525252]">
+                    <td className={`${orgColClass} py-3 px-4 text-[#525252]`}>
                       {c.assignedLead ? (
                         <span className="font-medium text-[#171717]">{c.assignedLead.name}</span>
                       ) : (

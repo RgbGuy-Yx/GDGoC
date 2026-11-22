@@ -62,7 +62,7 @@ export const LeadNotShortlisted = () => {
           <div className="flex items-center gap-2">
             <XCircle className="w-5 h-5 text-[#737373]" />
             <h2 className="text-2xl font-bold text-[#171717] tracking-tight">
-              Pending & Unshortlisted
+              Pending & Not Shortlisted
             </h2>
           </div>
           <p className="text-xs text-[#737373] mt-0.5">

@@ -8,8 +8,6 @@ import {
   CheckCircle2,
   Clock,
   XCircle,
-  ArrowRightLeft,
-  ChevronRight,
   Search
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -54,14 +52,11 @@ export const LeadOverview = () => {
   const waitlisted = candidates.filter((c) => c.shortlistStatus === 'WAITLISTED').length;
   const pending = candidates.filter((c) => c.shortlistStatus === 'PENDING' || c.shortlistStatus === 'IN_REVIEW').length;
   const notShortlisted = candidates.filter((c) => c.shortlistStatus === 'REJECTED').length;
-  const transferredIn = candidates.filter((c) => c.originalDomain !== c.currentDomain).length;
 
   // Reviewed = any decision has been made (shortlisted, waitlisted, or rejected)
   const reviewed = shortlisted + waitlisted + notShortlisted;
   const reviewedPct = total ? Math.round((reviewed / total) * 100) : 0;
 
-  // "Needs attention" = anything not yet in a final shortlisted state
-  const needsAttention = pending + notShortlisted;
 
   const filteredCandidates = useMemo(() => {
     if (!searchQuery.trim()) return candidates;
@@ -90,13 +85,6 @@ export const LeadOverview = () => {
             Evaluate, shortlist, and manage candidates applying for your assigned domain
           </p>
         </div>
-        <Link
-          to="/lead/candidates"
-          className="inline-flex items-center gap-2 px-5 py-2.5 text-xs font-semibold rounded-full bg-[#1a73e8] hover:bg-[#1557b0] text-white shadow-2xs transition-all self-start sm:self-auto active:scale-[0.98]"
-        >
-          View My Candidates
-          <ChevronRight className="w-3.5 h-3.5 text-white" />
-        </Link>
       </div>
 
       {error && (
@@ -122,7 +110,7 @@ export const LeadOverview = () => {
       </div>
 
       {/* Metrics Grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-3 2xl:grid-cols-5 gap-4">
+      <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
         <StatCard
           title="Assigned Candidates"
           value={total}
@@ -138,7 +126,7 @@ export const LeadOverview = () => {
           color="mint"
         />
         <StatCard
-          title="Pending / Review"
+          title="Pending"
           value={pending}
           subtitle="Needs evaluation"
           icon={Clock}
@@ -151,55 +139,6 @@ export const LeadOverview = () => {
           icon={XCircle}
           color="red"
         />
-        <StatCard
-          title="Transferred In"
-          value={transferredIn}
-          subtitle="From another domain"
-          icon={ArrowRightLeft}
-          color="purple"
-        />
-      </div>
-
-      {/* Quick Action Navigation Cards */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
-        <Link
-          to="/lead/shortlisted"
-          className="p-5 rounded-2xl bg-white border border-[#E5E5E5] hover:border-[#171717] shadow-ambient transition-all flex items-center justify-between gap-3 group"
-        >
-          <div className="min-w-0">
-            <p className="text-xs font-semibold text-[#171717]">
-              Shortlisted Candidates ({shortlisted})
-            </p>
-            <p className="text-[11px] text-[#737373] mt-0.5">Candidates marked for final admission review</p>
-          </div>
-          <ChevronRight className="shrink-0 w-4 h-4 text-[#737373] group-hover:text-[#171717] group-hover:translate-x-0.5 transition-all" />
-        </Link>
-
-        <Link
-          to="/lead/not-shortlisted"
-          className="p-5 rounded-2xl bg-white border border-[#E5E5E5] hover:border-[#171717] shadow-ambient transition-all flex items-center justify-between gap-3 group"
-        >
-          <div className="min-w-0">
-            <p className="text-xs font-semibold text-[#171717]">
-              Needs Attention ({needsAttention})
-            </p>
-            <p className="text-[11px] text-[#737373] mt-0.5">Pending review or previously rejected candidates</p>
-          </div>
-          <ChevronRight className="shrink-0 w-4 h-4 text-[#737373] group-hover:text-[#171717] group-hover:translate-x-0.5 transition-all" />
-        </Link>
-
-        <Link
-          to="/lead/transferred-to-me"
-          className="p-5 rounded-2xl bg-white border border-[#E5E5E5] hover:border-[#171717] shadow-ambient transition-all flex items-center justify-between gap-3 group"
-        >
-          <div className="min-w-0">
-            <p className="text-xs font-semibold text-[#171717]">
-              Transferred to Me ({transferredIn})
-            </p>
-            <p className="text-[11px] text-[#737373] mt-0.5">Candidates routed from another team lead</p>
-          </div>
-          <ChevronRight className="shrink-0 w-4 h-4 text-[#737373] group-hover:text-[#171717] group-hover:translate-x-0.5 transition-all" />
-        </Link>
       </div>
 
       {/* Candidate Table Preview */}
