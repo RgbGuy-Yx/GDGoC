@@ -16,7 +16,7 @@ export const StatCard = ({ title, value, subtitle, icon: Icon, color = 'mint' })
   return (
     <div className="bg-white rounded-2xl border border-[#E5E5E5] p-5 shadow-ambient hover:border-slate-300 transition-all group">
       <div className="flex items-start justify-between gap-3">
-        <div className="space-y-1">
+        <div className="space-y-1 min-w-0">
           <p className="text-[11px] font-semibold text-[#737373] uppercase tracking-wider">{title}</p>
           <p className="text-2xl font-bold text-[#171717] tracking-tight">{value ?? 0}</p>
           {subtitle && (

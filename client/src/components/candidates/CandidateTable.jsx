@@ -159,14 +159,14 @@ export const CandidateTable = ({
       {/* Desktop Data Table (Visible on md+ screens) */}
       <div className="hidden md:block bg-white rounded-2xl border border-[#E5E5E5] shadow-ambient overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse text-xs">
+          <table className="w-full min-w-[760px] text-left border-collapse text-xs">
             <thead>
               <tr className="bg-[#FAFAFA] border-b border-[#E5E5E5] text-[#737373] font-semibold uppercase tracking-wider text-[11px]">
                 <th scope="col" className="py-3 px-4 font-medium">Candidate / Roll No</th>
                 <th scope="col" className="py-3 px-4 font-medium">Contact</th>
                 <th scope="col" className="py-3 px-4 font-medium">Year & Branch</th>
-                <th scope="col" className="py-3 px-4 font-medium">Domain Status</th>
-                <th scope="col" className="py-3 px-4 font-medium">Assigned Lead</th>
+                <th scope="col" className="hidden xl:table-cell py-3 px-4 font-medium">Domain Status</th>
+                <th scope="col" className="hidden xl:table-cell py-3 px-4 font-medium">Assigned Lead</th>
                 <th scope="col" className="py-3 px-4 font-medium">Shortlist</th>
                 <th scope="col" className="py-3 px-4 font-medium">Final Status</th>
                 <th scope="col" className="py-3 px-4 text-right font-medium">Quick Action</th>
@@ -213,7 +213,7 @@ export const CandidateTable = ({
                     </td>
 
                     {/* Domain & Transfer info */}
-                    <td className="py-3 px-4">
+                    <td className="hidden xl:table-cell py-3 px-4">
                       <div className="space-y-1">
                         <div className="flex items-center gap-1.5">
                           <DomainBadge domain={c.currentDomain} />
@@ -232,7 +232,7 @@ export const CandidateTable = ({
                     </td>
 
                     {/* Assigned Lead */}
-                    <td className="py-3 px-4 text-[#525252]">
+                    <td className="hidden xl:table-cell py-3 px-4 text-[#525252]">
                       {c.assignedLead ? (
                         <span className="font-medium text-[#171717]">{c.assignedLead.name}</span>
                       ) : (

@@ -122,7 +122,7 @@ export const LeadOverview = () => {
       </div>
 
       {/* Metrics Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-3 2xl:grid-cols-5 gap-4">
         <StatCard
           title="Assigned Candidates"
           value={total}
@@ -161,44 +161,44 @@ export const LeadOverview = () => {
       </div>
 
       {/* Quick Action Navigation Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
         <Link
           to="/lead/shortlisted"
-          className="p-5 rounded-2xl bg-white border border-[#E5E5E5] hover:border-[#171717] shadow-ambient transition-all flex items-center justify-between group"
+          className="p-5 rounded-2xl bg-white border border-[#E5E5E5] hover:border-[#171717] shadow-ambient transition-all flex items-center justify-between gap-3 group"
         >
-          <div>
+          <div className="min-w-0">
             <p className="text-xs font-semibold text-[#171717]">
               Shortlisted Candidates ({shortlisted})
             </p>
             <p className="text-[11px] text-[#737373] mt-0.5">Candidates marked for final admission review</p>
           </div>
-          <ChevronRight className="w-4 h-4 text-[#737373] group-hover:text-[#171717] group-hover:translate-x-0.5 transition-all" />
+          <ChevronRight className="shrink-0 w-4 h-4 text-[#737373] group-hover:text-[#171717] group-hover:translate-x-0.5 transition-all" />
         </Link>
 
         <Link
           to="/lead/not-shortlisted"
-          className="p-5 rounded-2xl bg-white border border-[#E5E5E5] hover:border-[#171717] shadow-ambient transition-all flex items-center justify-between group"
+          className="p-5 rounded-2xl bg-white border border-[#E5E5E5] hover:border-[#171717] shadow-ambient transition-all flex items-center justify-between gap-3 group"
         >
-          <div>
+          <div className="min-w-0">
             <p className="text-xs font-semibold text-[#171717]">
               Needs Attention ({needsAttention})
             </p>
             <p className="text-[11px] text-[#737373] mt-0.5">Pending review or previously rejected candidates</p>
           </div>
-          <ChevronRight className="w-4 h-4 text-[#737373] group-hover:text-[#171717] group-hover:translate-x-0.5 transition-all" />
+          <ChevronRight className="shrink-0 w-4 h-4 text-[#737373] group-hover:text-[#171717] group-hover:translate-x-0.5 transition-all" />
         </Link>
 
         <Link
           to="/lead/transferred-to-me"
-          className="p-5 rounded-2xl bg-white border border-[#E5E5E5] hover:border-[#171717] shadow-ambient transition-all flex items-center justify-between group"
+          className="p-5 rounded-2xl bg-white border border-[#E5E5E5] hover:border-[#171717] shadow-ambient transition-all flex items-center justify-between gap-3 group"
         >
-          <div>
+          <div className="min-w-0">
             <p className="text-xs font-semibold text-[#171717]">
               Transferred to Me ({transferredIn})
             </p>
             <p className="text-[11px] text-[#737373] mt-0.5">Candidates routed from another team lead</p>
           </div>
-          <ChevronRight className="w-4 h-4 text-[#737373] group-hover:text-[#171717] group-hover:translate-x-0.5 transition-all" />
+          <ChevronRight className="shrink-0 w-4 h-4 text-[#737373] group-hover:text-[#171717] group-hover:translate-x-0.5 transition-all" />
         </Link>
       </div>
 
