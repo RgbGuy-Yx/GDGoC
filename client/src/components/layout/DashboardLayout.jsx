@@ -17,7 +17,7 @@ export const DashboardLayout = () => {
           isOpenMobile={mobileMenuOpen}
           onCloseMobile={() => setMobileMenuOpen(false)}
         />
-        <main className="flex-1 overflow-y-auto p-3.5 sm:p-6 lg:p-8 bg-gradient-to-b from-[#F0FDF4]/35 via-[#FAFAFA] to-[#FAFAFA]">
+        <main className="flex-1 overflow-y-auto p-3.5 sm:p-6 lg:p-8 bg-gradient-to-b from-[#E8F0FE]/35 via-[#FAFAFA] to-[#FAFAFA]">
           <div className="max-w-7xl mx-auto space-y-5 sm:space-y-6">
             <Outlet />
           </div>

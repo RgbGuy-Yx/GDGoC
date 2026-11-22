@@ -38,13 +38,13 @@ export const Navbar = ({ onToggleMobileMenu, isMobileMenuOpen }) => {
         <div className="hidden sm:flex items-center space-x-2">
           {isAdmin ? (
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-[#171717] text-white shadow-2xs">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#7AF1A7]" />
+              <span className="w-1.5 h-1.5 rounded-full bg-[#34A853]" />
               Organiser
             </span>
           ) : (
             <div className="flex items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-[#F0FDF4] text-[#166534] border border-[#B8F7CF]">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#7AF1A7]" />
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-[#E6F4EA] text-[#137333] border border-[#34A853]">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#34A853]" />
                 Team Lead
               </span>
               {user?.domains && user.domains.length > 0 && (

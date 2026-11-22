@@ -35,7 +35,7 @@ export const Sidebar = ({ isOpenMobile, onCloseMobile }) => {
     { to: '/lead', label: 'Overview', icon: LayoutDashboard, end: true },
     { to: '/lead/candidates', label: 'My Candidates', icon: Users },
     { to: '/lead/shortlisted', label: 'Shortlisted', icon: CheckCircle2 },
-    { to: '/lead/not-shortlisted', label: 'Pending / Not Shortlisted', icon: XCircle },
+    { to: '/lead/not-shortlisted', label: 'Pending & Not Shortlisted', icon: XCircle },
     { to: '/lead/transferred-to-me', label: 'Transferred to Me', icon: ArrowDownLeft },
     { to: '/lead/transferred-by-me', label: 'Transferred by Me', icon: ArrowUpRight },
   ];
@@ -72,7 +72,7 @@ export const Sidebar = ({ isOpenMobile, onCloseMobile }) => {
         {/* Mobile Header in Drawer */}
         <div className="p-4 border-b border-[#E5E5E5] flex items-center justify-between md:hidden">
           <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-[#7AF1A7]" />
+            <span className="w-2 h-2 rounded-full bg-[#34A853]" />
             <span className="text-xs font-semibold text-[#171717]">
               {isAdmin ? 'Organiser Console' : user?.name || 'Lead Workspace'}
             </span>
@@ -115,7 +115,7 @@ export const Sidebar = ({ isOpenMobile, onCloseMobile }) => {
                         <span>{item.label}</span>
                       </div>
                       {isActive && (
-                        <span className="w-1.5 h-1.5 rounded-full bg-[#7AF1A7]" />
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#34A853]" />
                       )}
                     </>
                   )}

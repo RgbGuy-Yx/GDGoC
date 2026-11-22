@@ -27,17 +27,24 @@ export const LeadNotShortlisted = () => {
     fetchCandidates();
   }, []);
 
+  const handleStatusChange = (candidateId, newStatus) => {
+    setCandidates((prev) =>
+      prev.map((c) => (c._id === candidateId ? { ...c, shortlistStatus: newStatus } : c))
+    );
+  };
+
   const pendingList = candidates.filter(
     (c) => c.shortlistStatus === 'PENDING' || c.shortlistStatus === 'IN_REVIEW'
   );
   const rejectedList = candidates.filter((c) => c.shortlistStatus === 'REJECTED');
+  const waitlistedList = candidates.filter((c) => c.shortlistStatus === 'WAITLISTED');
 
   let displayedList =
     activeTab === 'REJECTED'
       ? rejectedList
       : activeTab === 'PENDING'
         ? pendingList
-        : [...pendingList, ...rejectedList];
+        : [...pendingList, ...waitlistedList, ...rejectedList];
 
   if (selectedYear) {
     displayedList = displayedList.filter((c) => {
@@ -55,7 +62,7 @@ export const LeadNotShortlisted = () => {
           <div className="flex items-center gap-2">
             <XCircle className="w-5 h-5 text-[#737373]" />
             <h2 className="text-2xl font-bold text-[#171717] tracking-tight">
-              Pending & Unshortlisted
+              Pending & Not Shortlisted
             </h2>
           </div>
           <p className="text-xs text-[#737373] mt-0.5">
@@ -72,7 +79,7 @@ export const LeadNotShortlisted = () => {
               : 'hover:text-[#171717]'
               }`}
           >
-            All ({pendingList.length + rejectedList.length})
+            All ({pendingList.length + waitlistedList.length + rejectedList.length})
           </button>
           <button
             onClick={() => setActiveTab('PENDING')}
@@ -149,6 +156,7 @@ export const LeadNotShortlisted = () => {
         candidates={displayedList}
         loading={loading}
         baseDetailPath="/lead/candidates"
+        onStatusChange={handleStatusChange}
       />
     </div>
   );

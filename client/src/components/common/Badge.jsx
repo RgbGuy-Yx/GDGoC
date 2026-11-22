@@ -6,8 +6,8 @@ export const ShortlistBadge = ({ status }) => {
   const config = {
     SHORTLISTED: {
       label: 'Shortlisted',
-      className: 'bg-[#F0FDF4] text-[#166534] border-[#B8F7CF]',
-      dot: 'bg-[#7AF1A7]'
+      className: 'bg-[#E6F4EA] text-[#137333] border-[#34A853]',
+      dot: 'bg-[#34A853]'
     },
     WAITLISTED: {
       label: 'Waitlisted',
@@ -34,7 +34,7 @@ export const ShortlistBadge = ({ status }) => {
   const current = config[normalized] || config.PENDING;
 
   return (
-    <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium border ${current.className}`}>
+    <span className={`inline-flex items-center whitespace-nowrap gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium border ${current.className}`}>
       <span className={`w-1.5 h-1.5 rounded-full ${current.dot}`} />
       {current.label}
     </span>
@@ -47,8 +47,8 @@ export const FinalStatusBadge = ({ status }) => {
   const config = {
     SELECTED: {
       label: 'Selected',
-      className: 'bg-[#171717] text-white border-[#171717]',
-      dot: 'bg-[#7AF1A7]'
+      className: 'bg-[#1a73e8] text-white border-[#1a73e8]',
+      dot: 'bg-[#34A853]'
     },
     PENDING: {
       label: 'Pending Decision',
@@ -70,7 +70,7 @@ export const FinalStatusBadge = ({ status }) => {
   const current = config[normalized] || config.PENDING;
 
   return (
-    <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium border ${current.className}`}>
+    <span className={`inline-flex items-center whitespace-nowrap gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium border ${current.className}`}>
       <span className={`w-1.5 h-1.5 rounded-full ${current.dot}`} />
       {current.label}
     </span>
@@ -79,7 +79,7 @@ export const FinalStatusBadge = ({ status }) => {
 
 export const DomainBadge = ({ domain }) => {
   return (
-    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-[#F4F4F4] text-[#171717] border border-[#E5E5E5]">
+    <span className="inline-flex items-center whitespace-nowrap px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-[#F4F4F4] text-[#171717] border border-[#E5E5E5]">
       {domain || 'General'}
     </span>
   );
@@ -110,7 +110,7 @@ export const YearBadge = ({ year }) => {
   }
 
   return (
-    <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] border ${color}`}>
+    <span className={`inline-flex items-center whitespace-nowrap gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] border ${color}`}>
       <span className={`w-1.5 h-1.5 rounded-full ${dotColor}`} />
       {label}
     </span>
