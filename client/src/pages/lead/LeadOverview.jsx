@@ -40,6 +40,14 @@ export const LeadOverview = () => {
     fetchLeadData();
   }, []);
 
+  // Called by CandidateTable after a successful inline shortlist/reject action,
+  // so stats and progress update immediately without a full refetch.
+  const handleStatusChange = (candidateId, newStatus) => {
+    setCandidates((prev) =>
+      prev.map((c) => (c._id === candidateId ? { ...c, shortlistStatus: newStatus } : c))
+    );
+  };
+
   // Compute metrics
   const total = candidates.length;
   const shortlisted = candidates.filter((c) => c.shortlistStatus === 'SHORTLISTED').length;
@@ -220,6 +228,7 @@ export const LeadOverview = () => {
           candidates={filteredCandidates.slice(0, 5)}
           loading={loading}
           baseDetailPath="/lead/candidates"
+          onStatusChange={handleStatusChange}
         />
         {!loading && searchQuery.trim() && filteredCandidates.length === 0 && (
           <p className="text-xs text-[#737373] text-center py-4">No candidates match "{searchQuery}"</p>
