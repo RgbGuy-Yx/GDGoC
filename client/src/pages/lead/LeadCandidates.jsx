@@ -51,6 +51,12 @@ export const LeadCandidates = () => {
     fetchCandidates();
   };
 
+  const handleStatusChange = (candidateId, newStatus) => {
+    setCandidates((prev) =>
+      prev.map((c) => (c._id === candidateId ? { ...c, shortlistStatus: newStatus } : c))
+    );
+  };
+
   const handleReset = () => {
     setSearch('');
     setShortlistStatus('');
@@ -192,6 +198,7 @@ export const LeadCandidates = () => {
         candidates={candidates}
         loading={loading}
         baseDetailPath="/lead/candidates"
+        onStatusChange={handleStatusChange}
       />
 
       {/* Pagination */}
