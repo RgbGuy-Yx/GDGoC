@@ -6,8 +6,8 @@ export const ShortlistBadge = ({ status }) => {
   const config = {
     SHORTLISTED: {
       label: 'Shortlisted',
-      className: 'bg-[#F0FDF4] text-[#166534] border-[#B8F7CF]',
-      dot: 'bg-[#7AF1A7]'
+      className: 'bg-[#E6F4EA] text-[#137333] border-[#34A853]',
+      dot: 'bg-[#34A853]'
     },
     WAITLISTED: {
       label: 'Waitlisted',
@@ -47,8 +47,8 @@ export const FinalStatusBadge = ({ status }) => {
   const config = {
     SELECTED: {
       label: 'Selected',
-      className: 'bg-[#171717] text-white border-[#171717]',
-      dot: 'bg-[#7AF1A7]'
+      className: 'bg-[#1a73e8] text-white border-[#1a73e8]',
+      dot: 'bg-[#34A853]'
     },
     PENDING: {
       label: 'Pending Decision',

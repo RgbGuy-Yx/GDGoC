@@ -2,12 +2,12 @@ import React from 'react';
 
 export const StatCard = ({ title, value, subtitle, icon: Icon, color = 'mint' }) => {
   const iconTileStyles = {
-    mint: 'bg-[#F0FDF4] text-[#166534] border-[#B8F7CF]',
-    green: 'bg-[#F0FDF4] text-[#166534] border-[#B8F7CF]',
-    blue: 'bg-[#F4F4F4] text-[#171717] border-[#E5E5E5]',
-    amber: 'bg-[#FFFBEB] text-[#92400E] border-[#FDE68A]',
+    mint: 'bg-[#E6F4EA] text-[#137333] border-[#34A853]',
+    green: 'bg-[#E6F4EA] text-[#137333] border-[#34A853]',
+    blue: 'bg-[#E8F0FE] text-[#1A73E8] border-[#1a73e8]',
+    amber: 'bg-[#FEF7E0] text-[#B06000] border-[#FBBC04]',
     red: 'bg-[#FAFAFA] text-[#737373] border-[#E5E5E5]',
-    purple: 'bg-[#F4F4F4] text-[#171717] border-[#E5E5E5]',
+    purple: 'bg-[#E8F0FE] text-[#1A73E8] border-[#1a73e8]',
     slate: 'bg-[#F4F4F4] text-[#171717] border-[#E5E5E5]'
   };
 

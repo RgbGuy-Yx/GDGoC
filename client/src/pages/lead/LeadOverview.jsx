@@ -63,10 +63,10 @@ export const LeadOverview = () => {
         </div>
         <Link
           to="/lead/candidates"
-          className="inline-flex items-center gap-2 px-5 py-2.5 text-xs font-semibold rounded-full bg-[#171717] hover:bg-[#262626] text-white shadow-2xs transition-all self-start sm:self-auto active:scale-[0.98]"
+          className="inline-flex items-center gap-2 px-5 py-2.5 text-xs font-semibold rounded-full bg-[#1a73e8] hover:bg-[#1557b0] text-white shadow-2xs transition-all self-start sm:self-auto active:scale-[0.98]"
         >
           View My Candidates
-          <ChevronRight className="w-3.5 h-3.5 text-[#7AF1A7]" />
+          <ChevronRight className="w-3.5 h-3.5 text-white" />
         </Link>
       </div>
 
